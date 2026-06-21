@@ -209,18 +209,18 @@ export default function AltitudeDataScreen() {
 
         <section className={styles.section}>
           <h2 className={styles.sectionHeading}>
-            {"הגובה הנוכחי ותכנון הלילה הבא:"}
+            {"גבהי שינה בימים האחרונים:"}
           </h2>
-          {SECTION_1.map(({ key, label }) => renderField(key, label))}
+          {SECTION_2.map(({ key, label }) => renderField(key, label))}
         </section>
 
         <hr className={styles.divider} />
 
         <section className={styles.section}>
           <h2 className={styles.sectionHeading}>
-            {"גבהי שינה בימים האחרונים:"}
+            {"הגובה הנוכחי ותכנון הלילה הבא:"}
           </h2>
-          {SECTION_2.map(({ key, label }) => renderField(key, label))}
+          {SECTION_1.map(({ key, label }) => renderField(key, label))}
         </section>
 
         <button type="submit" className={styles.btnSubmit}>
