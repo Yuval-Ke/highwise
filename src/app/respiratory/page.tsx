@@ -1,11 +1,12 @@
 "use client";
 
-import { useState, type FormEvent } from "react";
+import { useEffect, useState, type FormEvent } from "react";
 import { useRouter } from "next/navigation";
 import type { RedFlags, AltitudeData, LLSInput, DailyInput } from "@/types";
 import { isBelowThreshold } from "@/types";
 import { saveRespiratoryData, getUserProfile, STORAGE_KEYS } from "@/lib/storage";
 import { riskEngine } from "@/lib/riskEngine";
+import { track } from "@/lib/analytics";
 import styles from "./respiratory.module.css";
 
 const WARNING_SIGNS: { key: keyof RedFlags; label: string }[] = [
@@ -22,6 +23,10 @@ export default function RespiratoryScreen() {
   const [respiratoryIllness, setRespiratoryIllness] = useState<boolean | null>(null);
   const [selectedFlags, setSelectedFlags] = useState<Set<keyof RedFlags>>(new Set());
   const [showError, setShowError] = useState(false);
+
+  useEffect(() => {
+    track("screen_viewed_respiratory");
+  }, []);
 
   function toggleFlag(key: keyof RedFlags) {
     setSelectedFlags((prev) => {
@@ -49,6 +54,7 @@ export default function RespiratoryScreen() {
     };
 
     saveRespiratoryData(respiratoryIllness, redFlags);
+    track("respiratory_completed");
 
     // Decide whether the three-day follow-up is needed
     const profile = getUserProfile();

@@ -2,6 +2,7 @@ import type { Metadata, Viewport } from "next";
 import { Rubik } from "next/font/google";
 import "./globals.css";
 import { ServiceWorkerRegistration } from "@/components/ServiceWorkerRegistration";
+import { AnalyticsInit } from "@/components/AnalyticsInit";
 
 const rubik = Rubik({
   subsets: ["hebrew", "latin"],
@@ -36,6 +37,7 @@ export default function RootLayout({
     <html lang="he" dir="rtl" className={rubik.variable}>
       <body>
         <ServiceWorkerRegistration />
+        <AnalyticsInit />
         <div id="app-shell">{children}</div>
       </body>
     </html>

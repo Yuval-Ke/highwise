@@ -4,6 +4,7 @@ import { useEffect, useState } from "react";
 import { useRouter } from "next/navigation";
 import Image from "next/image";
 import { hasUserProfile, clearAllData } from "@/lib/storage";
+import { track } from "@/lib/analytics";
 import styles from "./home.module.css";
 
 export default function Home() {
@@ -13,13 +14,16 @@ export default function Home() {
 
   useEffect(() => {
     setProfileExists(hasUserProfile());
+    track("screen_viewed_home");
   }, []);
 
   function handleStart() {
+    track("assessment_started");
     router.push(profileExists ? "/assessment" : "/profile");
   }
 
   function handleConfirmReset() {
+    track("reset_clicked");
     clearAllData();
     setProfileExists(false);
     setShowReset(false);

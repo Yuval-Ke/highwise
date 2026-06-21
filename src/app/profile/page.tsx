@@ -1,9 +1,10 @@
 "use client";
 
-import { useState, type FormEvent } from "react";
+import { useEffect, useState, type FormEvent } from "react";
 import { useRouter } from "next/navigation";
 import type { PreviousAltitudeIllness } from "@/types";
 import { saveUserProfile } from "@/lib/storage";
+import { track } from "@/lib/analytics";
 import styles from "./profile.module.css";
 
 const PAST_AMS_OPTIONS: readonly { value: PreviousAltitudeIllness; label: string }[] = [
@@ -38,6 +39,10 @@ export default function MedicalBackground() {
   const [diseases, setDiseases] = useState<string[]>([]);
   const [showError, setShowError] = useState(false);
 
+  useEffect(() => {
+    track("screen_viewed_profile");
+  }, []);
+
   function toggleDisease(name: string) {
     setDiseases((prev) =>
       prev.includes(name) ? prev.filter((d) => d !== name) : [...prev, name]
@@ -54,6 +59,7 @@ export default function MedicalBackground() {
       previousAltitudeIllness: pastAMS,
       backgroundDiseases: diseases,
     });
+    track("profile_completed");
     router.push("/assessment");
   }
 

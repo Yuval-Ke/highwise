@@ -1,9 +1,10 @@
 "use client";
 
-import { useState, type FormEvent } from "react";
+import { useEffect, useState, type FormEvent } from "react";
 import { useRouter } from "next/navigation";
 import type { AltitudeData } from "@/types";
 import { saveAltitudeData } from "@/lib/storage";
+import { track } from "@/lib/analytics";
 import styles from "./assessment.module.css";
 
 type FieldKey = keyof AltitudeData;
@@ -63,6 +64,10 @@ export default function AltitudeDataScreen() {
   const [errors, setErrors] = useState<FormErrors>({});
   const [phase, setPhase] = useState<"form" | "below_threshold">("form");
 
+  useEffect(() => {
+    track("screen_viewed_assessment");
+  }, []);
+
   function handleChange(key: FieldKey, value: string) {
     setValues((prev) => ({ ...prev, [key]: value }));
     if (errors[key]) {
@@ -93,11 +98,13 @@ export default function AltitudeDataScreen() {
       altitudeData.plannedSleepAltitudeTonight < 2500;
 
     if (belowThreshold) {
+      track("below_2500_blocked");
       setPhase("below_threshold");
       return;
     }
 
     saveAltitudeData(altitudeData);
+    track("altitude_completed");
     router.push("/symptoms");
   }
 

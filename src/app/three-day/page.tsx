@@ -1,14 +1,19 @@
 "use client";
 
-import { useState, type FormEvent } from "react";
+import { useEffect, useState, type FormEvent } from "react";
 import { useRouter } from "next/navigation";
 import { saveThreeDaysData } from "@/lib/storage";
+import { track } from "@/lib/analytics";
 import styles from "./three-day.module.css";
 
 export default function ThreeDayScreen() {
   const router = useRouter();
   const [answer, setAnswer] = useState<boolean | null>(null);
   const [showError, setShowError] = useState(false);
+
+  useEffect(() => {
+    track("screen_viewed_three_day");
+  }, []);
 
   function handleSubmit(e: FormEvent<HTMLFormElement>) {
     e.preventDefault();
@@ -18,6 +23,7 @@ export default function ThreeDayScreen() {
       return;
     }
     saveThreeDaysData(answer);
+    track("three_day_completed");
     router.push("/result");
   }
 

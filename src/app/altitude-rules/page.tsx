@@ -1,7 +1,8 @@
 "use client";
 
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import { useRouter } from "next/navigation";
+import { track } from "@/lib/analytics";
 import styles from "./altitude-rules.module.css";
 
 const ITEMS = [
@@ -46,6 +47,10 @@ const ITEMS = [
 export default function AltitudeRulesScreen() {
   const router = useRouter();
   const [openItems, setOpenItems] = useState<Set<number>>(new Set());
+
+  useEffect(() => {
+    track("screen_viewed_altitude_rules");
+  }, []);
 
   function toggle(index: number) {
     setOpenItems((prev) => {

@@ -1,9 +1,10 @@
 "use client";
 
-import { useState, type FormEvent } from "react";
+import { useEffect, useState, type FormEvent } from "react";
 import { useRouter } from "next/navigation";
 import type { LLSScore, LLSInput } from "@/types";
 import { saveLLSData } from "@/lib/storage";
+import { track } from "@/lib/analytics";
 import styles from "./symptoms.module.css";
 
 const SYMPTOM_GROUPS: {
@@ -60,6 +61,10 @@ export default function SymptomsScreen() {
   const [values, setValues] = useState<SymptomValues>({});
   const [errors, setErrors] = useState<Set<keyof LLSInput>>(new Set());
 
+  useEffect(() => {
+    track("screen_viewed_symptoms");
+  }, []);
+
   function handleSelect(key: keyof LLSInput, value: LLSScore) {
     setValues((prev) => ({ ...prev, [key]: value }));
     if (errors.has(key)) {
@@ -93,6 +98,7 @@ export default function SymptomsScreen() {
       fatigue: values.fatigue!,
       dizziness: values.dizziness!,
     });
+    track("symptoms_completed");
     router.push("/respiratory");
   }
 

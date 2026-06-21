@@ -17,6 +17,8 @@ import {
   STORAGE_KEYS,
 } from "@/lib/storage";
 import { riskEngine } from "@/lib/riskEngine";
+import { calculateLLS } from "@/lib/calculateLLS";
+import { track } from "@/lib/analytics";
 import styles from "./result.module.css";
 
 // ── Presentation-layer mapping ────────────────────────────────────────────────
@@ -227,11 +229,14 @@ type ResultData = {
 
 // ── Main component ────────────────────────────────────────────────────────────
 
+const FEEDBACK_URL = process.env.NEXT_PUBLIC_FEEDBACK_URL ?? "";
+
 export default function ResultScreen() {
   const router = useRouter();
   const [result, setResult] = useState<ResultData | null>(null);
   const [whyOpen, setWhyOpen] = useState(false);
   const savedRef = useRef(false);
+  const analyticsRef = useRef(false);
 
   useEffect(() => {
     const profile = getUserProfile();
@@ -294,6 +299,30 @@ export default function ResultScreen() {
 
     if (!savedRef.current) {
       savedRef.current = true;
+
+      // Analytics — gated by savedRef so it fires once even in StrictMode
+      if (!analyticsRef.current) {
+        analyticsRef.current = true;
+        const llsTotal = calculateLLS(daily.lls);
+        const llsSeverity =
+          llsTotal <= 2 ? "low_or_none" : llsTotal <= 5 ? "moderate" : "high";
+        const anyRedFlag = Object.values(daily.redFlags).some(Boolean);
+        const clinicalGroup =
+          level === "green"
+            ? "no_symptoms"
+            : level === "yellow"
+              ? "risk_factors_only"
+              : anyRedFlag
+                ? "red_flags"
+                : "symptomatic_possible_ams";
+        track("screen_viewed_result");
+        track("result_viewed", {
+          riskLevel: level === "green" ? "low" : level,
+          clinicalGroup,
+          llsSeverity,
+        });
+      }
+
       // _savedId is written back after first save so page reloads don't duplicate
       if (!assessment._savedId) {
         const id = Date.now().toString();
@@ -433,6 +462,18 @@ export default function ResultScreen() {
           <button type="button" className={styles.btnSecondary} onClick={() => router.push("/")}>
             {"חזור למסך הבית"}
           </button>
+          {FEEDBACK_URL && (
+            <button
+              type="button"
+              className={styles.btnFeedback}
+              onClick={() => {
+                track("feedback_clicked");
+                window.open(FEEDBACK_URL, "_blank", "noopener,noreferrer");
+              }}
+            >
+              {"שליחת משוב"}
+            </button>
+          )}
         </div>
 
         {/* Medical clarification */}
