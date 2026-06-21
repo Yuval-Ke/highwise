@@ -5,6 +5,7 @@
       "name": "highwise-dev",
       "runtimeExecutable": "npm",
       "runtimeArgs": ["run", "dev"],
+      "cwd": "C:\\Users\\USER\\Desktop\\DEMOCLAUDE\\AtitudeHelper\\HIGHWISE",
       "port": 3000
     }
   ]

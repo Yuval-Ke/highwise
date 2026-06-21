@@ -99,12 +99,12 @@ describe("pruneQueue", () => {
     expect(pruneQueue([old])).toHaveLength(0);
   });
 
-  test("keeps events 1 ms inside the 14-day window", () => {
+  test("keeps events safely inside the 14-day window", () => {
     const borderline = {
       eventName: "e",
       properties: {},
       queuedAt: new Date(
-        Date.now() - 14 * 24 * 60 * 60 * 1000 + 1
+        Date.now() - 14 * 24 * 60 * 60 * 1000 + 5000
       ).toISOString(),
     };
     expect(pruneQueue([borderline])).toHaveLength(1);

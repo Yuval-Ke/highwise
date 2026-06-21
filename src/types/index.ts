@@ -23,9 +23,25 @@ export type RedFlags = {
   repeatedVomiting: boolean;
 };
 
+export type TripContext = {
+  countryId: "nepal";
+  trekId: string;
+};
+
+export type LocationSelection = {
+  locationId: string;
+  trekId: string;
+  altitudeMeters: number;
+  nameEn: string;
+  nameHe: string;
+};
+
+export type AltitudeLocationSelections = Partial<Record<keyof AltitudeData, LocationSelection>>;
+
 export type UserProfile = {
   previousAltitudeIllness: PreviousAltitudeIllness;
   backgroundDiseases: string[];
+  tripContext?: TripContext;
 };
 
 export type AltitudeData = {

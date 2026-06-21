@@ -3,7 +3,7 @@
 import { useEffect, useState, type FormEvent } from "react";
 import { useRouter } from "next/navigation";
 import type { PreviousAltitudeIllness } from "@/types";
-import { saveUserProfile } from "@/lib/storage";
+import { saveUserProfile, getUserProfile } from "@/lib/storage";
 import { track } from "@/lib/analytics";
 import styles from "./profile.module.css";
 
@@ -41,6 +41,11 @@ export default function MedicalBackground() {
 
   useEffect(() => {
     track("screen_viewed_profile");
+    const profile = getUserProfile();
+    if (profile) {
+      setPastAMS(profile.previousAltitudeIllness);
+      setDiseases(profile.backgroundDiseases);
+    }
   }, []);
 
   function toggleDisease(name: string) {
@@ -55,12 +60,15 @@ export default function MedicalBackground() {
       setShowError(true);
       return;
     }
+    // Preserve any existing tripContext set on a prior /trek visit
+    const existingProfile = getUserProfile();
     saveUserProfile({
       previousAltitudeIllness: pastAMS,
       backgroundDiseases: diseases,
+      ...(existingProfile?.tripContext ? { tripContext: existingProfile.tripContext } : {}),
     });
     track("profile_completed");
-    router.push("/assessment");
+    router.push("/trek");
   }
 
   return (
@@ -150,7 +158,7 @@ export default function MedicalBackground() {
         </div>
 
         <button type="submit" className={styles.btnSubmit}>
-          {"שמור והתחל בדיקה"}
+          {"המשך"}
         </button>
       </form>
     </div>

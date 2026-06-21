@@ -40,8 +40,8 @@
   color: var(--color-navy);
 }
 
-/* ── Scrollable form area ───────────────────────────────────────── */
-.form {
+/* ── Scrollable content area ────────────────────────────────────── */
+.content {
   flex: 1;
   display: flex;
   flex-direction: column;
@@ -50,118 +50,14 @@
   overflow-y: auto;
 }
 
-/* ── Intro text ─────────────────────────────────────────────────── */
-.intro {
+/* ── Description text ───────────────────────────────────────────── */
+.desc {
   font-size: var(--text-sm);
   color: var(--color-text-muted);
   line-height: 1.65;
 }
 
-/* ── Question block ─────────────────────────────────────────────── */
-.questionBlock {
-  display: flex;
-  flex-direction: column;
-  gap: var(--space-3);
-}
-
-.questionLabel {
-  font-size: var(--text-base);
-  font-weight: 700;
-  color: var(--color-navy);
-  line-height: 1.5;
-}
-
-/* ── Radio group ────────────────────────────────────────────────── */
-.radioGroup {
-  display: flex;
-  flex-direction: column;
-  gap: 0;
-}
-
-.radioLabel {
-  display: flex;
-  flex-direction: row;
-  align-items: flex-start;
-  gap: var(--space-3);
-  padding: var(--space-2) 0;
-  cursor: pointer;
-  font-size: var(--text-sm);
-  color: var(--color-text);
-  line-height: 1.55;
-}
-
-.radioLabel input[type="radio"] {
-  flex-shrink: 0;
-  width: 18px;
-  height: 18px;
-  margin-top: 2px;
-  accent-color: var(--color-primary);
-  cursor: pointer;
-}
-
-/* ── Checkbox group ─────────────────────────────────────────────── */
-.checkGroup {
-  display: flex;
-  flex-direction: column;
-  gap: 0;
-}
-
-.checkLabel {
-  display: flex;
-  flex-direction: row;
-  align-items: flex-start;
-  gap: var(--space-3);
-  padding: var(--space-2) 0;
-  cursor: pointer;
-  font-size: var(--text-sm);
-  color: var(--color-text);
-  line-height: 1.55;
-}
-
-.checkLabel input[type="checkbox"] {
-  flex-shrink: 0;
-  width: 18px;
-  height: 18px;
-  margin-top: 2px;
-  accent-color: var(--color-primary);
-  cursor: pointer;
-}
-
-/* ── Validation error ───────────────────────────────────────────── */
-.errorMsg {
-  font-size: var(--text-sm);
-  color: var(--color-red);
-  margin-top: var(--space-1);
-}
-
-/* ── Section divider ────────────────────────────────────────────── */
-.divider {
-  border: none;
-  border-top: 1px solid var(--color-border);
-  margin: 0;
-}
-
-/* ── Trip context section ───────────────────────────────────────── */
-.tripSection {
-  display: flex;
-  flex-direction: column;
-  gap: var(--space-4);
-}
-
-.tripTitle {
-  font-size: var(--text-base);
-  font-weight: 700;
-  color: var(--color-navy);
-  line-height: 1.4;
-}
-
-.tripDesc {
-  font-size: var(--text-sm);
-  color: var(--color-text-muted);
-  line-height: 1.65;
-  margin-top: calc(-1 * var(--space-2));
-}
-
+/* ── Country row ────────────────────────────────────────────────── */
 .countryRow {
   display: flex;
   align-items: center;
@@ -354,7 +250,7 @@
 
 .clearTrekBtn:hover { color: var(--color-text); }
 
-/* ── Submit button ──────────────────────────────────────────────── */
+/* ── Continue button ────────────────────────────────────────────── */
 .btnSubmit {
   width: 100%;
   padding: var(--space-4) var(--space-5);

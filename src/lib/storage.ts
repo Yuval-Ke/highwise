@@ -1,4 +1,4 @@
-import type { UserProfile, AltitudeData, LLSInput, RedFlags, RiskLevel } from "@/types";
+import type { UserProfile, AltitudeData, LLSInput, RedFlags, RiskLevel, AltitudeLocationSelections } from "@/types";
 
 const NS = "nativ_";
 export const STORAGE_KEYS = {
@@ -66,6 +66,28 @@ export function saveThreeDaysData(value: boolean): void {
     STORAGE_KEYS.currentAssessment,
     JSON.stringify({ ...existing, threeDaysMildIllness: value })
   );
+}
+
+export function saveAltitudeLocationSelections(data: AltitudeLocationSelections): void {
+  if (typeof window === "undefined") return;
+  const raw = localStorage.getItem(STORAGE_KEYS.currentAssessment);
+  const existing = raw ? (JSON.parse(raw) as Record<string, unknown>) : {};
+  localStorage.setItem(
+    STORAGE_KEYS.currentAssessment,
+    JSON.stringify({ ...existing, altitudeLocationSelections: data })
+  );
+}
+
+export function getAltitudeLocationSelections(): AltitudeLocationSelections {
+  if (typeof window === "undefined") return {};
+  const raw = localStorage.getItem(STORAGE_KEYS.currentAssessment);
+  if (!raw) return {};
+  try {
+    const parsed = JSON.parse(raw) as Record<string, unknown>;
+    return (parsed.altitudeLocationSelections as AltitudeLocationSelections) ?? {};
+  } catch {
+    return {};
+  }
 }
 
 export type SavedAssessment = {

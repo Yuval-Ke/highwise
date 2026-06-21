@@ -14,6 +14,10 @@ export type AllowedEventProperties = {
   riskLevel?: string;
   clinicalGroup?: string;
   llsSeverity?: string;
+  // v0.2b trek/village analytics (no PII: no village name, locationId, or exact altitude)
+  trekId?: string;
+  fieldName?: string;
+  altitudeBand?: string;
 };
 
 type QueuedEvent = {
@@ -31,6 +35,9 @@ const ALLOWED_KEYS: ReadonlyArray<keyof AllowedEventProperties> = [
   "riskLevel",
   "clinicalGroup",
   "llsSeverity",
+  "trekId",
+  "fieldName",
+  "altitudeBand",
 ];
 
 function sanitize(props: AllowedEventProperties): AllowedEventProperties {
@@ -186,6 +193,17 @@ export function track(
   properties?: AllowedEventProperties
 ): void {
   void _track(eventName, properties);
+}
+
+/** Map an altitude in metres to the analytics band string. */
+export function getAltitudeBand(meters: number): string {
+  if (meters < 2500) return "below_2500";
+  if (meters < 3000) return "2500_2999";
+  if (meters < 3500) return "3000_3499";
+  if (meters < 4000) return "3500_3999";
+  if (meters < 4500) return "4000_4499";
+  if (meters < 5000) return "4500_4999";
+  return "5000_plus";
 }
 
 /** Send any queued events. Called on app init and when going back online. */
