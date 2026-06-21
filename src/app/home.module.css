@@ -1,0 +1,206 @@
+/* ── Page layout ──────────────────────────────────────────────────── */
+.main {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  padding: var(--space-6) var(--page-px) var(--space-6);
+  gap: var(--space-4);
+  flex: 1;
+}
+
+/* ── Logo ─────────────────────────────────────────────────────────── */
+.logoArea {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: var(--space-2);
+  text-align: center;
+}
+
+/* Crop the internal white space baked into the PNG */
+.logo {
+  max-width: 200px;
+  width: 100%;
+  overflow: hidden;
+  height: 124px; /* reveals mark from y≈20 to y≈144 of the 200px display */
+}
+
+.logo img {
+  width: 100% !important;
+  height: auto !important;
+  display: block;
+  margin-top: -20px; /* strips ~10% top padding from the PNG */
+}
+
+.subtitle {
+  font-size: var(--text-base);
+  color: var(--color-text-muted);
+  line-height: 1.5;
+}
+
+/* ── Illustration ─────────────────────────────────────────────────── */
+.illustration {
+  width: 100%;
+  height: 175px;
+  position: relative;
+  border-radius: var(--radius-lg);
+  overflow: hidden;
+  box-shadow: var(--shadow-md);
+  border: 1px solid var(--color-border);
+}
+
+/* ── Medical disclaimer ───────────────────────────────────────────── */
+.disclaimer {
+  width: 100%;
+  background: var(--color-primary-light);
+  border: 1px solid var(--color-border);
+  border-radius: var(--radius-md);
+  padding: var(--space-5);
+  display: flex;
+  flex-direction: row;
+  gap: var(--space-3);
+  align-items: flex-start;
+}
+
+.disclaimerIcon {
+  flex-shrink: 0;
+  color: var(--color-primary);
+  margin-top: 2px;
+}
+
+.disclaimerBody {
+  flex: 1;
+}
+
+.disclaimerBody p {
+  font-size: var(--text-sm);
+  color: var(--color-text-muted);
+  line-height: 1.9;
+}
+
+.disclaimerLabel {
+  font-weight: 700;
+  color: var(--color-navy);
+}
+
+/* ── Action buttons ───────────────────────────────────────────────── */
+.actions {
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-3);
+  width: 100%;
+  padding-top: var(--space-2);
+}
+
+.btnPrimary {
+  width: 100%;
+  padding: var(--space-4) var(--space-5);
+  background: var(--color-primary);
+  color: var(--color-primary-fg);
+  font-size: var(--text-lg);
+  font-weight: 700;
+  border-radius: var(--radius-md);
+  min-height: 56px;
+  letter-spacing: 0.01em;
+  transition: background var(--duration-fast) var(--ease),
+              transform  var(--duration-fast) var(--ease);
+}
+
+.btnPrimary:hover  { background: #1254a0; }
+.btnPrimary:active { background: #0e4487; transform: scale(0.98); }
+
+.btnSecondary {
+  width: 100%;
+  padding: var(--space-3) var(--space-5);
+  background: transparent;
+  color: var(--color-primary);
+  font-size: var(--text-sm);
+  font-weight: 500;
+  border: 1.5px solid var(--color-primary);
+  border-radius: var(--radius-md);
+  min-height: 44px;
+  transition: background var(--duration-fast) var(--ease);
+}
+
+.btnSecondary:hover { background: var(--color-primary-light); }
+
+.btnInfo {
+  width: 100%;
+  padding: var(--space-3) var(--space-5);
+  background: var(--color-primary-light);
+  color: var(--color-navy);
+  font-size: var(--text-sm);
+  font-weight: 600;
+  border: 1.5px solid var(--color-primary);
+  border-radius: var(--radius-md);
+  min-height: 44px;
+  transition: background var(--duration-fast) var(--ease);
+}
+
+.btnInfo:hover { background: #d0e7f7; }
+
+/* ── Reset dialog ─────────────────────────────────────────────────── */
+.overlay {
+  position: fixed;
+  inset: 0;
+  background: rgb(13 32 64 / 0.45);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: var(--page-px);
+  z-index: 100;
+}
+
+.dialog {
+  background: var(--color-surface);
+  border-radius: var(--radius-xl);
+  border: 1px solid var(--color-border);
+  padding: var(--space-6);
+  width: 100%;
+  max-width: 360px;
+  box-shadow: var(--shadow-md);
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-5);
+}
+
+.dialogMessage {
+  font-size: var(--text-base);
+  color: var(--color-text);
+  line-height: 1.7;
+  text-align: center;
+}
+
+.dialogButtons {
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-3);
+}
+
+.btnCancel {
+  width: 100%;
+  padding: var(--space-3) var(--space-5);
+  background: transparent;
+  color: var(--color-text-muted);
+  font-size: var(--text-base);
+  border: 1px solid var(--color-border);
+  border-radius: var(--radius-md);
+  min-height: 44px;
+  transition: background var(--duration-fast) var(--ease);
+}
+
+.btnCancel:hover { background: var(--color-bg); }
+
+.btnDanger {
+  width: 100%;
+  padding: var(--space-3) var(--space-5);
+  background: var(--color-red);
+  color: #ffffff;
+  font-size: var(--text-base);
+  font-weight: 600;
+  border-radius: var(--radius-md);
+  min-height: 44px;
+  transition: background var(--duration-fast) var(--ease);
+}
+
+.btnDanger:hover { background: #991b1b; }

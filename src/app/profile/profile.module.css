@@ -1,0 +1,159 @@
+/* ── Screen layout ──────────────────────────────────────────────── */
+.page {
+  display: flex;
+  flex-direction: column;
+  min-height: 100dvh;
+}
+
+/* ── Top bar ────────────────────────────────────────────────────── */
+.header {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  position: relative;
+  padding: var(--space-4) var(--page-px);
+  border-bottom: 1px solid var(--color-border);
+  background: var(--color-surface);
+  flex-shrink: 0;
+}
+
+.backBtn {
+  position: absolute;
+  right: var(--page-px);
+  top: 50%;
+  transform: translateY(-50%);
+  width: 44px;
+  height: 44px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  color: var(--color-primary);
+  border-radius: var(--radius-sm);
+  transition: background var(--duration-fast) var(--ease);
+}
+
+.backBtn:hover { background: var(--color-primary-light); }
+
+.screenTitle {
+  font-size: var(--text-lg);
+  font-weight: 700;
+  color: var(--color-navy);
+}
+
+/* ── Scrollable form area ───────────────────────────────────────── */
+.form {
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-6);
+  padding: var(--space-6) var(--page-px) var(--space-10);
+  overflow-y: auto;
+}
+
+/* ── Intro text ─────────────────────────────────────────────────── */
+.intro {
+  font-size: var(--text-sm);
+  color: var(--color-text-muted);
+  line-height: 1.65;
+}
+
+/* ── Question block ─────────────────────────────────────────────── */
+.questionBlock {
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-3);
+}
+
+.questionLabel {
+  font-size: var(--text-base);
+  font-weight: 700;
+  color: var(--color-navy);
+  line-height: 1.5;
+}
+
+/* ── Radio group ────────────────────────────────────────────────── */
+.radioGroup {
+  display: flex;
+  flex-direction: column;
+  gap: 0;
+}
+
+.radioLabel {
+  display: flex;
+  flex-direction: row;
+  align-items: flex-start;
+  gap: var(--space-3);
+  padding: var(--space-2) 0;
+  cursor: pointer;
+  font-size: var(--text-sm);
+  color: var(--color-text);
+  line-height: 1.55;
+}
+
+.radioLabel input[type="radio"] {
+  flex-shrink: 0;
+  width: 18px;
+  height: 18px;
+  margin-top: 2px;
+  accent-color: var(--color-primary);
+  cursor: pointer;
+}
+
+/* ── Checkbox group ─────────────────────────────────────────────── */
+.checkGroup {
+  display: flex;
+  flex-direction: column;
+  gap: 0;
+}
+
+.checkLabel {
+  display: flex;
+  flex-direction: row;
+  align-items: flex-start;
+  gap: var(--space-3);
+  padding: var(--space-2) 0;
+  cursor: pointer;
+  font-size: var(--text-sm);
+  color: var(--color-text);
+  line-height: 1.55;
+}
+
+.checkLabel input[type="checkbox"] {
+  flex-shrink: 0;
+  width: 18px;
+  height: 18px;
+  margin-top: 2px;
+  accent-color: var(--color-primary);
+  cursor: pointer;
+}
+
+/* ── Validation error ───────────────────────────────────────────── */
+.errorMsg {
+  font-size: var(--text-sm);
+  color: var(--color-red);
+  margin-top: var(--space-1);
+}
+
+/* ── Section divider ────────────────────────────────────────────── */
+.divider {
+  border: none;
+  border-top: 1px solid var(--color-border);
+  margin: 0;
+}
+
+/* ── Submit button ──────────────────────────────────────────────── */
+.btnSubmit {
+  width: 100%;
+  padding: var(--space-4) var(--space-5);
+  background: var(--color-primary);
+  color: var(--color-primary-fg);
+  font-size: var(--text-lg);
+  font-weight: 700;
+  border-radius: var(--radius-md);
+  min-height: 56px;
+  transition: background var(--duration-fast) var(--ease),
+              transform  var(--duration-fast) var(--ease);
+}
+
+.btnSubmit:hover  { background: #1254a0; }
+.btnSubmit:active { background: #0e4487; transform: scale(0.98); }

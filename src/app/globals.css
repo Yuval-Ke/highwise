@@ -1,0 +1,174 @@
+/* ── Design tokens ──────────────────────────────────────────────── */
+:root {
+  /* Risk level colours — semantic, never change */
+  --color-green:  #2d7a4f;
+  --color-yellow: #c8900a;
+  --color-orange: #c95c00;
+  --color-red:    #b91c1c;
+
+  --color-green-bg:  #f0faf4;
+  --color-yellow-bg: #fffbeb;
+  --color-orange-bg: #fff7ed;
+  --color-red-bg:    #fef2f2;
+
+  /* Brand palette — medical travel */
+  --color-navy:         #0d2040;        /* deep navy: headings, strong text */
+  --color-primary:      #1565C0;        /* medical blue: CTA, active, links */
+  --color-primary-fg:   #ffffff;
+  --color-primary-light:#e8f2fb;        /* pale blue tint: card BG, hover */
+
+  /* Neutral surface */
+  --color-surface:      #ffffff;
+  --color-bg:           #f0f5ff;        /* very pale blue page background */
+  --color-text:         #0d2040;        /* navy body text */
+  --color-text-muted:   #4a5e75;        /* muted navy-gray */
+  --color-border:       #bdd4ec;        /* light blue-gray border */
+
+  /* Typography */
+  --font-sans: var(--font-rubik, "Rubik", "Arial Hebrew", Arial, sans-serif);
+  --text-xs:   0.75rem;
+  --text-sm:   0.875rem;
+  --text-base: 1rem;
+  --text-lg:   1.125rem;
+  --text-xl:   1.25rem;
+  --text-2xl:  1.5rem;
+  --text-3xl:  1.875rem;
+
+  /* Spacing */
+  --space-1:  0.25rem;
+  --space-2:  0.5rem;
+  --space-3:  0.75rem;
+  --space-4:  1rem;
+  --space-5:  1.25rem;
+  --space-6:  1.5rem;
+  --space-8:  2rem;
+  --space-10: 2.5rem;
+  --space-12: 3rem;
+
+  /* Layout */
+  --app-max-width: 480px;
+  --page-px: var(--space-5);
+
+  /* Radii */
+  --radius-sm:   0.375rem;
+  --radius-md:   0.75rem;
+  --radius-lg:   1rem;
+  --radius-xl:   1.25rem;
+  --radius-full: 9999px;
+
+  /* Shadows — slightly navy-tinted */
+  --shadow-sm: 0 1px 4px 0 rgb(13 32 64 / 0.08);
+  --shadow-md: 0 4px 14px 0 rgb(13 32 64 / 0.10);
+
+  /* Motion */
+  --duration-fast: 150ms;
+  --duration-base: 250ms;
+  --ease: cubic-bezier(0.4, 0, 0.2, 1);
+}
+
+/* ── Reset ──────────────────────────────────────────────────────── */
+*, *::before, *::after {
+  box-sizing: border-box;
+  margin: 0;
+  padding: 0;
+}
+
+html {
+  height: 100%;
+  font-size: 16px;
+  -webkit-text-size-adjust: 100%;
+}
+
+body {
+  min-height: 100%;
+  font-family: var(--font-sans);
+  font-size: var(--text-base);
+  color: var(--color-text);
+  background: var(--color-bg);
+  line-height: 1.6;
+  direction: rtl;
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+  overflow-x: hidden;
+}
+
+/* ── App shell — centred mobile column ─────────────────────────── */
+#app-shell {
+  display: flex;
+  flex-direction: column;
+  min-height: 100dvh;
+  width: 100%;
+  max-width: var(--app-max-width);
+  margin-inline: auto;
+  background: var(--color-surface);
+  position: relative;
+}
+
+/* ── Typography helpers ─────────────────────────────────────────── */
+h1, h2, h3, h4 {
+  line-height: 1.3;
+  font-weight: 700;
+  color: var(--color-navy);
+}
+
+p { line-height: 1.7; }
+
+a {
+  color: var(--color-primary);
+  text-decoration: none;
+}
+
+/* ── Form elements — RTL-aware ──────────────────────────────────── */
+input, button, select, textarea {
+  font-family: inherit;
+  font-size: inherit;
+  direction: rtl;
+}
+
+input[type="number"] {
+  appearance: textfield;
+}
+input[type="number"]::-webkit-outer-spin-button,
+input[type="number"]::-webkit-inner-spin-button {
+  -webkit-appearance: none;
+}
+
+button {
+  cursor: pointer;
+  border: none;
+  background: none;
+}
+
+ul, ol { list-style: none; }
+
+/* ── Utility classes ────────────────────────────────────────────── */
+.sr-only {
+  position: absolute;
+  width: 1px;
+  height: 1px;
+  padding: 0;
+  margin: -1px;
+  overflow: hidden;
+  clip: rect(0, 0, 0, 0);
+  white-space: nowrap;
+  border: 0;
+}
+
+/* ── Risk-level colour modifiers ────────────────────────────────── */
+.risk-green  { color: var(--color-green);  background: var(--color-green-bg);  }
+.risk-yellow { color: var(--color-yellow); background: var(--color-yellow-bg); }
+.risk-orange { color: var(--color-orange); background: var(--color-orange-bg); }
+.risk-red    { color: var(--color-red);    background: var(--color-red-bg);    }
+
+/* ── Responsive: on wide screens keep the card centred ─────────── */
+@media (min-width: 481px) {
+  body { background: var(--color-bg); }
+  #app-shell {
+    margin-top: var(--space-8);
+    margin-bottom: var(--space-8);
+    border-radius: var(--radius-xl);
+    border: 1px solid var(--color-border);
+    box-shadow: var(--shadow-md);
+    min-height: calc(100dvh - var(--space-8) * 2);
+  }
+}

@@ -1,0 +1,262 @@
+/* ── Screen layout ──────────────────────────────────────────────── */
+.page {
+  display: flex;
+  flex-direction: column;
+  min-height: 100dvh;
+}
+
+/* ── Top bar ────────────────────────────────────────────────────── */
+.header {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  position: relative;
+  padding: var(--space-4) var(--page-px);
+  border-bottom: 1px solid var(--color-border);
+  background: var(--color-surface);
+  flex-shrink: 0;
+}
+
+.backBtn {
+  position: absolute;
+  right: var(--page-px);
+  top: 50%;
+  transform: translateY(-50%);
+  width: 44px;
+  height: 44px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  color: var(--color-primary);
+  border-radius: var(--radius-sm);
+  transition: background var(--duration-fast) var(--ease);
+}
+
+.backBtn:hover { background: var(--color-primary-light); }
+
+.screenTitle {
+  font-size: var(--text-lg);
+  font-weight: 700;
+  color: var(--color-navy);
+}
+
+/* ── Scrollable form area ───────────────────────────────────────── */
+.form {
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-6);
+  padding: var(--space-5) var(--page-px) var(--space-10);
+  overflow-y: auto;
+}
+
+/* ── Progress indicator ─────────────────────────────────────────── */
+.progress {
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-2);
+}
+
+.progressLabel {
+  font-size: var(--text-sm);
+  color: var(--color-text-muted);
+  font-weight: 500;
+}
+
+.progressTrack {
+  width: 100%;
+  height: 4px;
+  background: var(--color-primary-light);
+  border-radius: var(--radius-full);
+  overflow: hidden;
+}
+
+.progressFill {
+  height: 100%;
+  background: var(--color-primary);
+  border-radius: var(--radius-full);
+  transition: width var(--duration-base) var(--ease);
+}
+
+/* ── Intro text ─────────────────────────────────────────────────── */
+.intro {
+  font-size: var(--text-sm);
+  color: var(--color-text-muted);
+  line-height: 1.65;
+}
+
+/* ── Section ────────────────────────────────────────────────────── */
+.section {
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-4);
+}
+
+.sectionHeading {
+  font-size: var(--text-base);
+  font-weight: 700;
+  color: var(--color-navy);
+  line-height: 1.4;
+}
+
+/* ── Individual field ───────────────────────────────────────────── */
+.field {
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-2);
+}
+
+.fieldLabel {
+  font-size: var(--text-sm);
+  font-weight: 600;
+  color: var(--color-text);
+  line-height: 1.4;
+}
+
+/* ── Input + unit row ───────────────────────────────────────────── */
+/* RTL: input (first in DOM) → right side; unit → left side       */
+.inputRow {
+  display: flex;
+  flex-direction: row;
+  align-items: center;
+  gap: var(--space-3);
+}
+
+.input {
+  flex: 1;
+  padding: var(--space-3) var(--space-4);
+  font-size: var(--text-base);
+  color: var(--color-text);
+  background: var(--color-surface);
+  border: 1.5px solid var(--color-border);
+  border-radius: var(--radius-md);
+  direction: ltr;
+  min-height: 48px;
+  transition: border-color var(--duration-fast) var(--ease),
+              box-shadow  var(--duration-fast) var(--ease);
+}
+
+.input::placeholder {
+  color: var(--color-text-muted);
+  opacity: 0.7;
+}
+
+.input:focus {
+  outline: none;
+  border-color: var(--color-primary);
+  box-shadow: 0 0 0 3px rgb(21 101 192 / 0.12);
+}
+
+.inputInvalid {
+  border-color: var(--color-red);
+}
+
+.inputInvalid:focus {
+  box-shadow: 0 0 0 3px rgb(185 28 28 / 0.12);
+}
+
+.unit {
+  font-size: var(--text-sm);
+  color: var(--color-text-muted);
+  white-space: nowrap;
+  flex-shrink: 0;
+}
+
+/* ── Field-level error ──────────────────────────────────────────── */
+.fieldError {
+  font-size: var(--text-sm);
+  color: var(--color-red);
+  line-height: 1.5;
+}
+
+/* ── Section divider ────────────────────────────────────────────── */
+.divider {
+  border: none;
+  border-top: 1px solid var(--color-border);
+  margin: 0;
+}
+
+/* ── Submit button ──────────────────────────────────────────────── */
+.btnSubmit {
+  width: 100%;
+  padding: var(--space-4) var(--space-5);
+  background: var(--color-primary);
+  color: var(--color-primary-fg);
+  font-size: var(--text-lg);
+  font-weight: 700;
+  border-radius: var(--radius-md);
+  min-height: 56px;
+  transition: background var(--duration-fast) var(--ease),
+              transform  var(--duration-fast) var(--ease);
+}
+
+.btnSubmit:hover  { background: #1254a0; }
+.btnSubmit:active { background: #0e4487; transform: scale(0.98); }
+
+/* ── Below-threshold screen ─────────────────────────────────────── */
+.btPage {
+  display: flex;
+  flex-direction: column;
+  min-height: 100dvh;
+  padding: var(--space-10) var(--page-px);
+  gap: var(--space-6);
+  justify-content: center;
+}
+
+.btTitle {
+  font-size: var(--text-xl);
+  font-weight: 700;
+  color: var(--color-navy);
+  line-height: 1.4;
+  text-align: center;
+}
+
+.btIcon {
+  display: flex;
+  justify-content: center;
+  color: var(--color-primary);
+}
+
+.btBody {
+  font-size: var(--text-base);
+  color: var(--color-text-muted);
+  line-height: 1.75;
+  text-align: center;
+}
+
+.btActions {
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-3);
+  margin-top: var(--space-2);
+}
+
+.btnPrimary {
+  width: 100%;
+  padding: var(--space-4) var(--space-5);
+  background: var(--color-primary);
+  color: var(--color-primary-fg);
+  font-size: var(--text-base);
+  font-weight: 700;
+  border-radius: var(--radius-md);
+  min-height: 52px;
+  transition: background var(--duration-fast) var(--ease);
+}
+
+.btnPrimary:hover  { background: #1254a0; }
+.btnPrimary:active { background: #0e4487; }
+
+.btnSecondary {
+  width: 100%;
+  padding: var(--space-3) var(--space-5);
+  background: transparent;
+  color: var(--color-primary);
+  font-size: var(--text-sm);
+  font-weight: 500;
+  border: 1.5px solid var(--color-primary);
+  border-radius: var(--radius-md);
+  min-height: 44px;
+  transition: background var(--duration-fast) var(--ease);
+}
+
+.btnSecondary:hover { background: var(--color-primary-light); }

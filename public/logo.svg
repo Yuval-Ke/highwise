@@ -1,0 +1,22 @@
+<svg viewBox="0 0 500 310" xmlns="http://www.w3.org/2000/svg">
+  <!-- Mountain silhouette: left peak taller, right peak shorter, M-shaped -->
+  <path d="M 45,185 L 200,25 L 260,130 L 320,65 L 455,185 Z" fill="#0d2040"/>
+
+  <!-- Left peak crystalline facet — thin white wedge -->
+  <polygon points="202,29 230,79 211,53" fill="white"/>
+
+  <!-- Right peak crystalline facet — thin white wedge -->
+  <polygon points="322,67 345,102 330,83" fill="white"/>
+
+  <!-- App name -->
+  <text
+    x="250"
+    y="258"
+    font-family="'Helvetica Neue', Helvetica, Arial, sans-serif"
+    font-size="40"
+    font-weight="700"
+    fill="#0d2040"
+    text-anchor="middle"
+    letter-spacing="13"
+  >HIGHWISE</text>
+</svg>

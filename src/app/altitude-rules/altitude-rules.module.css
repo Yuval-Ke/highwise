@@ -1,0 +1,126 @@
+.page {
+  display: flex;
+  flex-direction: column;
+  min-height: 100dvh;
+}
+
+/* ── Header ── */
+.header {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  position: relative;
+  padding: var(--space-4) var(--page-px);
+  padding-inline-start: calc(var(--page-px) + 44px);
+  padding-inline-end: calc(var(--page-px) + 44px);
+  border-bottom: 1px solid var(--color-border);
+  background: var(--color-surface);
+  flex-shrink: 0;
+  min-height: 60px;
+}
+
+.backBtn {
+  position: absolute;
+  right: var(--page-px);
+  top: 50%;
+  transform: translateY(-50%);
+  width: 44px;
+  height: 44px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  color: var(--color-primary);
+  border-radius: var(--radius-sm);
+  transition: background var(--duration-fast) var(--ease);
+  flex-shrink: 0;
+}
+
+.backBtn:hover { background: var(--color-primary-light); }
+
+.screenTitle {
+  font-size: var(--text-sm);
+  font-weight: 700;
+  color: var(--color-navy);
+  text-align: center;
+  line-height: 1.4;
+}
+
+/* ── Scrollable content ── */
+.content {
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-3);
+  padding: var(--space-5) var(--page-px) var(--space-10);
+  overflow-y: auto;
+}
+
+/* ── Accordion ── */
+.accordion {
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-2);
+}
+
+.item {
+  background: var(--color-surface);
+  border: 1px solid var(--color-border);
+  border-radius: var(--radius-md);
+  overflow: hidden;
+}
+
+.trigger {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  width: 100%;
+  padding: var(--space-4) var(--space-4);
+  background: transparent;
+  color: var(--color-navy);
+  font-size: var(--text-sm);
+  font-weight: 600;
+  text-align: start;
+  line-height: 1.5;
+  gap: var(--space-3);
+  cursor: pointer;
+  transition: background var(--duration-fast) var(--ease);
+}
+
+.trigger:hover { background: var(--color-primary-light); }
+
+.triggerOpen {
+  background: var(--color-primary-light);
+  border-bottom: 1px solid var(--color-border);
+}
+
+.chevron {
+  flex-shrink: 0;
+  color: var(--color-primary);
+  transition: transform var(--duration-fast) var(--ease);
+}
+
+.chevronOpen {
+  transform: rotate(180deg);
+}
+
+.body {
+  padding: var(--space-4);
+  font-size: var(--text-sm);
+  color: var(--color-text-muted);
+  line-height: 1.75;
+}
+
+/* ── Medical note ── */
+.medicalNote {
+  background: var(--color-primary-light);
+  border: 1px solid var(--color-border);
+  border-radius: var(--radius-md);
+  padding: var(--space-4) var(--space-4);
+}
+
+.medicalNote p {
+  font-size: var(--text-xs);
+  color: var(--color-text-muted);
+  line-height: 1.7;
+  text-align: center;
+}
