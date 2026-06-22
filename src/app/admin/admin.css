@@ -59,7 +59,8 @@ body {
 }
 
 /* ── Tables ──────────────────────────────────────────────────────────────── */
-.admin-table { width: 100%; border-collapse: collapse; }
+.table-scroll { overflow-x: auto; -webkit-overflow-scrolling: touch; }
+.admin-table { width: 100%; border-collapse: collapse; min-width: 480px; }
 .admin-table th {
   text-align: left;
   font-weight: 600;
@@ -69,8 +70,10 @@ body {
   color: #718096;
   padding: 8px 12px;
   border-bottom: 2px solid #e2e8f0;
+  white-space: nowrap;
 }
-.admin-table td { padding: 10px 12px; border-bottom: 1px solid #f0f0f0; vertical-align: middle; }
+.admin-table td { padding: 10px 12px; border-bottom: 1px solid #f0f0f0; vertical-align: middle; word-break: break-word; }
+.admin-table td code { word-break: break-all; }
 .admin-table tr:last-child td { border-bottom: none; }
 .admin-table tr:hover td { background: #f9fafb; }
 

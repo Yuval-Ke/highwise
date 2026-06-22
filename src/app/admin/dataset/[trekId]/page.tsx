@@ -152,6 +152,7 @@ export default async function TrekDetailPage({
             <p className="admin-card-title">Locations ({(locations ?? []).length})</p>
           </div>
 
+          <div className="table-scroll">
           <table className="admin-table">
             <thead>
               <tr>
@@ -257,6 +258,7 @@ export default async function TrekDetailPage({
               ))}
             </tbody>
           </table>
+          </div>
 
           {/* Add location form */}
           <details style={{ marginTop: 20 }}>

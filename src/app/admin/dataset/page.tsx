@@ -131,40 +131,42 @@ export default async function DatasetPage() {
                 </p>
               </div>
 
-              <table className="admin-table">
-                <thead>
-                  <tr>
-                    <th>Trek ID</th>
-                    <th>Name</th>
-                    <th>Popular</th>
-                    <th>Active</th>
-                    <th>Review</th>
-                    <th></th>
-                  </tr>
-                </thead>
-                <tbody>
-                  {countryTreks.map(trek => (
-                    <tr key={trek.id}>
-                      <td><code style={{ fontSize: 11 }}>{trek.trek_id}</code></td>
-                      <td>{trek.name_en}</td>
-                      <td>{trek.is_popular ? '★' : ''}</td>
-                      <td>
-                        <span className={`badge ${trek.is_active ? 'badge-green' : 'badge-red'}`}>
-                          {trek.is_active ? 'active' : 'inactive'}
-                        </span>
-                      </td>
-                      <td>
-                        {trek.needs_review && <span className="needs-review-flag">⚠ review</span>}
-                      </td>
-                      <td>
-                        <Link href={`/admin/dataset/${trek.trek_id}`} className="btn btn-secondary btn-sm">
-                          Locations
-                        </Link>
-                      </td>
+              <div className="table-scroll">
+                <table className="admin-table">
+                  <thead>
+                    <tr>
+                      <th>Trek ID</th>
+                      <th>Name</th>
+                      <th>Popular</th>
+                      <th>Active</th>
+                      <th>Review</th>
+                      <th></th>
                     </tr>
-                  ))}
-                </tbody>
-              </table>
+                  </thead>
+                  <tbody>
+                    {countryTreks.map(trek => (
+                      <tr key={trek.id}>
+                        <td><code style={{ fontSize: 11 }}>{trek.trek_id}</code></td>
+                        <td>{trek.name_en}</td>
+                        <td>{trek.is_popular ? '★' : ''}</td>
+                        <td>
+                          <span className={`badge ${trek.is_active ? 'badge-green' : 'badge-red'}`}>
+                            {trek.is_active ? 'active' : 'inactive'}
+                          </span>
+                        </td>
+                        <td>
+                          {trek.needs_review && <span className="needs-review-flag">⚠ review</span>}
+                        </td>
+                        <td>
+                          <Link href={`/admin/dataset/${trek.trek_id}`} className="btn btn-secondary btn-sm">
+                            Locations
+                          </Link>
+                        </td>
+                      </tr>
+                    ))}
+                  </tbody>
+                </table>
+              </div>
 
               {/* Add trek form */}
               <details style={{ marginTop: 16 }}>
