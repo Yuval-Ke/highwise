@@ -4,6 +4,7 @@ import "./globals.css";
 import { ServiceWorkerRegistration } from "@/components/ServiceWorkerRegistration";
 import { AnalyticsInit } from "@/components/AnalyticsInit";
 import { AppStatusGuard } from "@/components/AppStatusGuard";
+import { ConsentGuard } from "@/components/ConsentGuard";
 import { SyncInit } from "@/components/SyncInit";
 
 const rubik = Rubik({
@@ -42,7 +43,9 @@ export default function RootLayout({
         <AnalyticsInit />
         <SyncInit />
         <AppStatusGuard>
-          <div id="app-shell">{children}</div>
+          <ConsentGuard>
+            <div id="app-shell">{children}</div>
+          </ConsentGuard>
         </AppStatusGuard>
       </body>
     </html>

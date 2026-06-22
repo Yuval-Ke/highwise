@@ -80,6 +80,7 @@ const fullMockConfig: PublicAppConfig = {
   paymentMode: 'disabled',
   syncInterval: 3600,
   updatedAt: '2026-06-22T10:00:00.000Z',
+  consentVersion: '1',
   locationEnabled: false,
   currentAltitudeFromLocationEnabled: false,
   ascentTrackingEnabled: false,

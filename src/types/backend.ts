@@ -63,6 +63,8 @@ export interface PublicAppConfig {
   /** Sync check interval in seconds. */
   syncInterval: number;
   updatedAt: string;
+  /** Consent version string from remote config; bumping it forces re-consent. */
+  consentVersion: string;
   // Location feature flags — all false in v0.3
   locationEnabled: boolean;
   currentAltitudeFromLocationEnabled: boolean;

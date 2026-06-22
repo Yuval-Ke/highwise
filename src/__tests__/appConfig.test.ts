@@ -19,6 +19,7 @@ const BASE_CONFIG: PublicAppConfig = {
   syncEnabled: true, maintenanceMode: false, maintenanceMessage: null,
   appDisabled: false, disabledMessage: null, minSupportedVersion: '0.1.0',
   paymentMode: 'disabled', syncInterval: 3600, updatedAt: '2026-06-22T10:00:00Z',
+  consentVersion: '1',
   locationEnabled: false, currentAltitudeFromLocationEnabled: false,
   ascentTrackingEnabled: false, sendLocationDataEnabled: false,
 };

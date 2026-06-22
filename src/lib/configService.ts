@@ -47,6 +47,7 @@ export async function getPublicConfig(): Promise<PublicAppConfig> {
     paymentMode:      get<PaymentMode>('payment_mode', 'disabled'),
     syncInterval:     Number(get('sync_interval', 3600)),
     updatedAt,
+    consentVersion:                     String(get('consent_version', '1')),
     locationEnabled:                    Boolean(get('location_enabled', false)),
     currentAltitudeFromLocationEnabled: Boolean(get('current_altitude_from_location_enabled', false)),
     ascentTrackingEnabled:              Boolean(get('ascent_tracking_enabled', false)),
