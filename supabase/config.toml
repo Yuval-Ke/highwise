@@ -1,0 +1,4 @@
+# Supabase project config — used by the Supabase CLI.
+# project_id is the subdomain of your Supabase URL (not secret).
+[api]
+project_id = "efzxlycbgdzsteofkmrv"
