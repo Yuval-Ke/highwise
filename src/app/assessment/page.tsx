@@ -10,7 +10,7 @@ import {
   saveAltitudeLocationSelections,
 } from "@/lib/storage";
 import { track, getAltitudeBand } from "@/lib/analytics";
-import { getTrekById } from "@/lib/nepalData";
+import { getActiveTrekById } from "@/lib/datasetStore";
 import type { NTrek, NLocation } from "@/lib/nepalData";
 import { VillageLookupModal } from "@/components/VillageLookupModal";
 import styles from "./assessment.module.css";
@@ -86,7 +86,7 @@ export default function AltitudeDataScreen() {
     const ctx = profile?.tripContext ?? null;
     setTripContext(ctx);
     if (ctx && ctx.trekId !== "other_or_unsure") {
-      setTrek(getTrekById(ctx.trekId) ?? null);
+      setTrek(getActiveTrekById(ctx.trekId) ?? null);
     }
 
     // Restore existing location selections, clearing them if trek changed

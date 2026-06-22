@@ -3,6 +3,8 @@ import { Rubik } from "next/font/google";
 import "./globals.css";
 import { ServiceWorkerRegistration } from "@/components/ServiceWorkerRegistration";
 import { AnalyticsInit } from "@/components/AnalyticsInit";
+import { AppStatusGuard } from "@/components/AppStatusGuard";
+import { SyncInit } from "@/components/SyncInit";
 
 const rubik = Rubik({
   subsets: ["hebrew", "latin"],
@@ -38,7 +40,10 @@ export default function RootLayout({
       <body>
         <ServiceWorkerRegistration />
         <AnalyticsInit />
-        <div id="app-shell">{children}</div>
+        <SyncInit />
+        <AppStatusGuard>
+          <div id="app-shell">{children}</div>
+        </AppStatusGuard>
       </body>
     </html>
   );

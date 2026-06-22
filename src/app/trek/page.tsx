@@ -6,13 +6,15 @@ import type { TripContext } from "@/types";
 import { saveUserProfile, getUserProfile, saveAltitudeLocationSelections, getAltitudeLocationSelections } from "@/lib/storage";
 import { track } from "@/lib/analytics";
 import {
-  NEPAL_DATA,
   getTrekById,
   getTrekDisplayName,
-  getPopularTreks,
-  getTreksByRegion,
-  searchTreks,
 } from "@/lib/nepalData";
+import {
+  getActiveNepalData,
+  getActivePopularTreks,
+  getActiveTreksByRegion,
+  searchActiveTreks,
+} from "@/lib/datasetStore";
 import styles from "./trek.module.css";
 
 const OTHER_OR_UNSURE = "other_or_unsure";
@@ -52,11 +54,12 @@ export default function TrekContextPage() {
     return trek ? getTrekDisplayName(trek) : "";
   }
 
-  const filteredTreks = trekQuery ? searchTreks(trekQuery) : NEPAL_DATA.treks;
-  const popularTreks = getPopularTreks().filter((t) =>
+  const activeData = getActiveNepalData();
+  const filteredTreks = trekQuery ? searchActiveTreks(trekQuery) : activeData.treks;
+  const popularTreks = getActivePopularTreks().filter((t) =>
     filteredTreks.some((f) => f.trekId === t.trekId)
   );
-  const regionMap = getTreksByRegion();
+  const regionMap = getActiveTreksByRegion();
 
   function handleContinue() {
     const existingProfile = getUserProfile();
