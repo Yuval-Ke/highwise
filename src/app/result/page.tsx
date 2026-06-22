@@ -19,6 +19,7 @@ import {
 import { riskEngine } from "@/lib/riskEngine";
 import { calculateLLS } from "@/lib/calculateLLS";
 import { track } from "@/lib/analytics";
+import { queueAssessmentLog } from "@/lib/assessmentLogger";
 import styles from "./result.module.css";
 
 // ── Presentation-layer mapping ────────────────────────────────────────────────
@@ -351,6 +352,16 @@ export default function ResultScreen() {
           STORAGE_KEYS.currentAssessment,
           JSON.stringify({ ...assessment, _savedId: id })
         );
+
+        const locationSelections = assessment.altitudeLocationSelections as Record<string, unknown> | undefined;
+        queueAssessmentLog({
+          daily,
+          riskLevel: level,
+          profile,
+          villageLookupUsed: locationSelections
+            ? Object.values(locationSelections).some(Boolean)
+            : false,
+        });
       }
     }
   }, [router]);

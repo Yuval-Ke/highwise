@@ -3,6 +3,7 @@
 import { useEffect } from 'react';
 import { getCachedConfig, fetchConfig } from '@/lib/appConfigStore';
 import { getCachedDatasetVersion, fetchDataset } from '@/lib/datasetStore';
+import { flushAssessmentQueue } from '@/lib/assessmentLogger';
 
 /**
  * Invisible component mounted in the root layout.
@@ -16,6 +17,7 @@ import { getCachedDatasetVersion, fetchDataset } from '@/lib/datasetStore';
 export function SyncInit() {
   useEffect(() => {
     async function run() {
+      flushAssessmentQueue().catch(() => {});
       const config = await fetchConfig();
       if (!config || !config.syncEnabled) return;
 
