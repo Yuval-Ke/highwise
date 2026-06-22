@@ -1,5 +1,111 @@
 # HighWise — Changelog & Production Recovery Reference
 
+## v0.3 — Backend, Admin, Consent, Assessment Logging (2026-06-22)
+
+### Production status
+
+| Field | Value |
+|---|---|
+| Status | **Live on Production** |
+| Production URL | https://highwise.vercel.app |
+| Deployment ID | _to fill after deploy_ |
+| Branch merged | `v0.3-backend-admin` |
+| Final branch commit | `f446c2aeecac53f02c4ae68fa245b39fc756a0e5` |
+| Main commit | _to fill after merge_ |
+| Git tag | `v0.3` |
+| Supabase dataset | `v0.3.0-nepal-initial` (15 treks, 322 locations) |
+
+---
+
+### Features added
+
+**Supabase backend schema**
+- Tables: `admin_users`, `countries`, `treks`, `locations`, `assessment_logs`, `sync_logs`, `audit_logs`, `dataset_versions`
+- Row Level Security; migrations in `supabase/migrations/`
+
+**Admin authentication**
+- Supabase Auth + `admin_users` table (`owner` / `admin` roles)
+- `/admin/login` (Server Action), middleware gates all `/admin/*` routes
+- `requireAdmin()` / `requireOwner()` in `src/lib/adminAuth.ts`
+
+**Admin dataset CRUD & publish workflow**
+- `/admin/dataset` — country + trek management; `/admin/dataset/[trekId]` — locations
+- `buildAndValidateSnapshot()` — validates before publish with change summary diff
+- `publishDataset()` Server Action — writes to `dataset_versions`, updates `is_current`
+
+**Remote config**
+- `GET /api/public/config` — cached 60 s / stale-while-revalidate 5 min
+- `AppStatusGuard` — `appDisabled` overlay, `maintenanceMode` banner, `version_too_old` overlay
+- Location flags (`locationEnabled`, etc.) all `false` by default
+
+**Dataset sync**
+- `GET /api/public/dataset` — full published dataset as JSON
+- `SyncInit` fetches config + dataset on mount and on `online` event; version-based cache invalidation
+- Bundled fallback when API unavailable
+
+**Nepal dataset live**
+- **15 treks, 322 locations**, version `v0.3.0-nepal-initial`
+
+**Mandatory first-use consent gate**
+- `/consent` page with full Hebrew medical disclaimer
+- `ConsentGuard` in root layout; `nativ_privacy_consent` localStorage key
+- Consent preserved by `clearAllData()`
+
+**Trek page hydration fix**
+- `useState("") + useEffect` pattern eliminates SSR/CSR mismatch on `/trek`
+
+**Assessment logging**
+- `queueAssessmentLog()` / `flushAssessmentQueue()` in `src/lib/assessmentLogger.ts`
+- Queue in `nativ_assessment_sync_queue`; consent-gated; flush on mount + online event
+- `POST /api/public/assessment-log` inserts to `assessment_logs`
+- 33-field payload; all location fields `null`; `altitudeSource: 'none'`; session dedup via `UNIQUE` constraint
+
+**Admin dashboard**
+- `/admin/dashboard` — server-rendered aggregate stats
+- Risk distribution, by-day (last 14), top treks, dataset versions/sources, device/browser summary
+
+---
+
+### Safety constraints — all preserved
+
+| Constraint | Verified |
+|---|---|
+| `riskEngine.ts` unchanged | 0 lines diff from main |
+| `calculateLLS.ts` unchanged | 0 lines diff from main |
+| Result logic unchanged | Only addition: `queueAssessmentLog` call after `saveCompletedAssessment` |
+| LLS score not shown to public | Used only for analytics label and logger; never rendered in UI |
+| No medication doses | Absent |
+| No user login for public users | Not added |
+| No device location / GPS | `navigator.geolocation` absent from all source |
+| No PII collected | No name, email, phone, or free-text notes in logs |
+| Service role key server-side only | No `NEXT_PUBLIC_` prefix; only in `src/lib/supabase/server.ts` |
+| `.env.local` not committed | Confirmed (`.env*` in `.gitignore`) |
+
+---
+
+### Test results (at commit `f446c2a`)
+
+| Check | Result |
+|---|---|
+| `npm test` | 292 / 292 passed (13 suites) |
+| TypeScript (`tsc --noEmit`) | Clean |
+| Production build (`next build`) | Clean |
+| Preview QA | PASS |
+| Production QA | _to fill after deploy_ |
+| Phone smoke test | _to fill after phone test_ |
+
+---
+
+### Rollback procedure
+
+To roll back to v0.2b:
+```bash
+git checkout 745ba41
+npx vercel deploy --prod
+```
+
+---
+
 ## v0.2b — Trek Selection & Nepal Dataset (2026-06-21)
 
 ### Production status

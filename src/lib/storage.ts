@@ -124,12 +124,15 @@ export function clearCurrentAssessment(): void {
   localStorage.removeItem(STORAGE_KEYS.currentAssessment);
 }
 
+// Keys that must survive "reset all data" (consent persists across resets by design).
+const RESET_PRESERVED_KEYS = new Set([`${NS}privacy_consent`]);
+
 export function clearAllData(): void {
   if (typeof window === "undefined") return;
   const toRemove: string[] = [];
   for (let i = 0; i < localStorage.length; i++) {
     const key = localStorage.key(i);
-    if (key?.startsWith(NS)) toRemove.push(key);
+    if (key?.startsWith(NS) && !RESET_PRESERVED_KEYS.has(key)) toRemove.push(key);
   }
   toRemove.forEach((k) => localStorage.removeItem(k));
 }

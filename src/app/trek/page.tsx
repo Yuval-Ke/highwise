@@ -6,32 +6,36 @@ import type { TripContext } from "@/types";
 import { saveUserProfile, getUserProfile, saveAltitudeLocationSelections, getAltitudeLocationSelections } from "@/lib/storage";
 import { track } from "@/lib/analytics";
 import {
-  NEPAL_DATA,
   getTrekById,
   getTrekDisplayName,
-  getPopularTreks,
-  getTreksByRegion,
-  searchTreks,
 } from "@/lib/nepalData";
+import {
+  getActiveNepalData,
+  getActivePopularTreks,
+  getActiveTreksByRegion,
+  searchActiveTreks,
+} from "@/lib/datasetStore";
 import styles from "./trek.module.css";
 
 const OTHER_OR_UNSURE = "other_or_unsure";
 
 export default function TrekContextPage() {
   const router = useRouter();
-  const [selectedTrekId, setSelectedTrekId] = useState<string>(() => {
-    if (typeof window === "undefined") return "";
-    return getUserProfile()?.tripContext?.trekId ?? "";
-  });
+  // "" matches the server-rendered initial state — localStorage is read in useEffect after mount.
+  const [selectedTrekId, setSelectedTrekId] = useState<string>("");
   const [dropdownOpen, setDropdownOpen] = useState(false);
   const [trekQuery, setTrekQuery] = useState("");
   const trekSearchRef = useRef<HTMLInputElement>(null);
 
   useEffect(() => {
     track("screen_viewed_trek");
-    if (!getUserProfile()) {
+    const profile = getUserProfile();
+    if (!profile) {
       router.replace("/profile");
+      return;
     }
+    const savedTrekId = profile.tripContext?.trekId ?? "";
+    if (savedTrekId) setSelectedTrekId(savedTrekId);
   }, [router]);
 
   useEffect(() => {
@@ -52,11 +56,12 @@ export default function TrekContextPage() {
     return trek ? getTrekDisplayName(trek) : "";
   }
 
-  const filteredTreks = trekQuery ? searchTreks(trekQuery) : NEPAL_DATA.treks;
-  const popularTreks = getPopularTreks().filter((t) =>
+  const activeData = getActiveNepalData();
+  const filteredTreks = trekQuery ? searchActiveTreks(trekQuery) : activeData.treks;
+  const popularTreks = getActivePopularTreks().filter((t) =>
     filteredTreks.some((f) => f.trekId === t.trekId)
   );
-  const regionMap = getTreksByRegion();
+  const regionMap = getActiveTreksByRegion();
 
   function handleContinue() {
     const existingProfile = getUserProfile();
