@@ -264,4 +264,15 @@ export async function commitSnapshot(
   });
 
   if (error) throw new Error(`Failed to commit snapshot: ${error.message}`);
+
+  // Keep app_config in sync so SyncInit triggers client downloads.
+  // Without this, GET /api/public/config still returns datasetVersion:'0.0.0'
+  // and the public app never fetches the published dataset.
+  const { error: cfgErr } = await supabase
+    .from('app_config')
+    .upsert(
+      { key: 'dataset_version', value: snapshot.datasetVersion },
+      { onConflict: 'key' }
+    );
+  if (cfgErr) throw new Error(`Failed to update config dataset_version: ${cfgErr.message}`);
 }

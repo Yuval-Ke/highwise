@@ -8,7 +8,8 @@ jest.mock('@/lib/supabase/server', () => ({
 }));
 
 import { createServerSupabaseClient } from '@/lib/supabase/server';
-import { buildAndValidateSnapshot } from '@/lib/publishService';
+import { buildAndValidateSnapshot, commitSnapshot } from '@/lib/publishService';
+import type { PublishedDataset } from '@/types/backend';
 
 const mockCreateClient = createServerSupabaseClient as jest.MockedFunction<typeof createServerSupabaseClient>;
 
@@ -223,5 +224,68 @@ describe('buildAndValidateSnapshot()', () => {
     buildMock();
     const result = await buildAndValidateSnapshot();
     expect(result.snapshot!.datasetVersion).toBe('1.0.0');
+  });
+});
+
+// ── commitSnapshot() ──────────────────────────────────────────────────────────
+
+const SAMPLE_SNAPSHOT: PublishedDataset = {
+  schemaVersion: '1',
+  datasetVersion: 'v0.3.0-nepal-initial',
+  publishedAt: '2026-06-22T00:00:00Z',
+  countries: [],
+  treks: [],
+  locations: [],
+};
+
+function buildCommitMock() {
+  const upsertMock  = jest.fn().mockResolvedValue({ error: null });
+  const insertMock  = jest.fn().mockResolvedValue({ error: null });
+  const eqMock      = jest.fn().mockResolvedValue({ error: null });
+  const updateMock  = jest.fn().mockReturnValue({ eq: eqMock });
+
+  const fromMock = jest.fn().mockImplementation((table: string) => {
+    if (table === 'dataset_versions') return { update: updateMock, insert: insertMock };
+    if (table === 'app_config')       return { upsert: upsertMock };
+    return {};
+  });
+
+  mockCreateClient.mockReturnValue({ from: fromMock } as never);
+  return { fromMock, updateMock, eqMock, insertMock, upsertMock };
+}
+
+describe('commitSnapshot()', () => {
+  beforeEach(() => jest.clearAllMocks());
+
+  it('inserts into dataset_versions with is_current=true', async () => {
+    const { insertMock } = buildCommitMock();
+    await commitSnapshot(SAMPLE_SNAPSHOT, 'user-abc');
+    expect(insertMock).toHaveBeenCalledWith(
+      expect.objectContaining({ dataset_version: 'v0.3.0-nepal-initial', is_current: true, published_by: 'user-abc' })
+    );
+  });
+
+  it('clears previous is_current before inserting', async () => {
+    const { updateMock, eqMock } = buildCommitMock();
+    await commitSnapshot(SAMPLE_SNAPSHOT, 'user-abc');
+    expect(updateMock).toHaveBeenCalledWith({ is_current: false });
+    expect(eqMock).toHaveBeenCalledWith('is_current', true);
+  });
+
+  it('upserts app_config dataset_version so SyncInit triggers client downloads', async () => {
+    const { upsertMock } = buildCommitMock();
+    await commitSnapshot(SAMPLE_SNAPSHOT, 'user-abc');
+    expect(upsertMock).toHaveBeenCalledWith(
+      { key: 'dataset_version', value: 'v0.3.0-nepal-initial' },
+      { onConflict: 'key' }
+    );
+  });
+
+  it('queries app_config table (not dataset_versions) for the config upsert', async () => {
+    const { fromMock } = buildCommitMock();
+    await commitSnapshot(SAMPLE_SNAPSHOT, 'user-abc');
+    const calledTables = fromMock.mock.calls.map((c: unknown[]) => c[0]);
+    expect(calledTables).toContain('app_config');
+    expect(calledTables).toContain('dataset_versions');
   });
 });
