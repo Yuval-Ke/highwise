@@ -21,19 +21,21 @@ const OTHER_OR_UNSURE = "other_or_unsure";
 
 export default function TrekContextPage() {
   const router = useRouter();
-  const [selectedTrekId, setSelectedTrekId] = useState<string>(() => {
-    if (typeof window === "undefined") return "";
-    return getUserProfile()?.tripContext?.trekId ?? "";
-  });
+  // "" matches the server-rendered initial state — localStorage is read in useEffect after mount.
+  const [selectedTrekId, setSelectedTrekId] = useState<string>("");
   const [dropdownOpen, setDropdownOpen] = useState(false);
   const [trekQuery, setTrekQuery] = useState("");
   const trekSearchRef = useRef<HTMLInputElement>(null);
 
   useEffect(() => {
     track("screen_viewed_trek");
-    if (!getUserProfile()) {
+    const profile = getUserProfile();
+    if (!profile) {
       router.replace("/profile");
+      return;
     }
+    const savedTrekId = profile.tripContext?.trekId ?? "";
+    if (savedTrekId) setSelectedTrekId(savedTrekId);
   }, [router]);
 
   useEffect(() => {
