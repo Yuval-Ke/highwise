@@ -48,6 +48,7 @@ export default async function TrekDetailPage({
       <nav className="admin-nav">
         <span className="admin-nav-brand">HighWise Admin</span>
         <Link href="/admin/dataset" className="admin-nav-link">Dataset</Link>
+        <Link href="/admin/import" className="admin-nav-link">Import</Link>
         <span className="admin-nav-link active">{trek.name_en}</span>
         <div className="admin-nav-spacer" />
         <span className="admin-nav-user">{adminUser.email} · {adminUser.role}</span>
