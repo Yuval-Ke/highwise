@@ -41,6 +41,7 @@ export default async function DatasetPage() {
         <span className="admin-nav-brand">HighWise Admin</span>
         <Link href="/admin/dataset" className="admin-nav-link active">Dataset</Link>
         <Link href="/admin/dashboard" className="admin-nav-link">Dashboard</Link>
+        <Link href="/admin/import" className="admin-nav-link">Import</Link>
         <div className="admin-nav-spacer" />
         <span className="admin-nav-user">{adminUser.email} · {adminUser.role}</span>
         <form action={logoutAction}>
