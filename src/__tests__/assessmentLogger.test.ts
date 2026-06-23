@@ -268,4 +268,78 @@ describe('assessmentLogger', () => {
     const remaining = JSON.parse(store[ASSESSMENT_QUEUE_KEY] ?? '[]');
     expect(remaining).toHaveLength(0);
   });
+
+  // ── Immediate-flush pattern (fix for result-page delivery bug) ────────────────
+
+  it('queue then immediate flush delivers the log (fixed result-page pattern)', async () => {
+    const { getStoredConsent } = await import('@/lib/consentStore');
+    (getStoredConsent as jest.Mock).mockReturnValue({ accepted: true, consentVersion: '1', acceptedAt: new Date().toISOString() });
+    mockFetch(201);
+
+    const { queueAssessmentLog, flushAssessmentQueue, ASSESSMENT_QUEUE_KEY } = await import('@/lib/assessmentLogger');
+
+    // This mirrors what result/page.tsx now does: enqueue then immediately flush
+    queueAssessmentLog(INPUT);
+    await flushAssessmentQueue();
+
+    expect(global.fetch).toHaveBeenCalledTimes(1);
+    expect(global.fetch).toHaveBeenCalledWith(
+      '/api/public/assessment-log',
+      expect.objectContaining({ method: 'POST' })
+    );
+    const remaining = JSON.parse(store[ASSESSMENT_QUEUE_KEY] ?? '[]');
+    expect(remaining).toHaveLength(0);
+  });
+
+  it('no log is sent when consent is absent even if queueAssessmentLog and flush are both called', async () => {
+    const { getStoredConsent } = await import('@/lib/consentStore');
+    (getStoredConsent as jest.Mock).mockReturnValue(null); // clearAllMocks does not reset mockReturnValue
+
+    const { queueAssessmentLog, flushAssessmentQueue, ASSESSMENT_QUEUE_KEY } = await import('@/lib/assessmentLogger');
+    queueAssessmentLog(INPUT);
+    await flushAssessmentQueue();
+
+    expect(global.fetch).not.toHaveBeenCalled();
+    // Entry stays in queue for when consent is later granted
+    const remaining = JSON.parse(store[ASSESSMENT_QUEUE_KEY] ?? '[]');
+    expect(remaining).toHaveLength(1);
+  });
+
+  it('if flush fails, queued log remains for retry on next flush', async () => {
+    const { getStoredConsent } = await import('@/lib/consentStore');
+    (getStoredConsent as jest.Mock).mockReturnValue({ accepted: true, consentVersion: '1', acceptedAt: new Date().toISOString() });
+    mockFetchError(); // first flush fails
+
+    const { queueAssessmentLog, flushAssessmentQueue, ASSESSMENT_QUEUE_KEY } = await import('@/lib/assessmentLogger');
+    queueAssessmentLog(INPUT);
+    await flushAssessmentQueue(); // fails — entry kept with attempts: 1
+
+    const afterFail = JSON.parse(store[ASSESSMENT_QUEUE_KEY] ?? '[]');
+    expect(afterFail).toHaveLength(1);
+    expect(afterFail[0].attempts).toBe(1);
+
+    // Retry succeeds on next flush (SyncInit or online event)
+    mockFetch(201);
+    await flushAssessmentQueue();
+
+    const afterRetry = JSON.parse(store[ASSESSMENT_QUEUE_KEY] ?? '[]');
+    expect(afterRetry).toHaveLength(0);
+  });
+
+  it('clearing the queue externally (reset) after a failed flush means no further sends', async () => {
+    const { getStoredConsent } = await import('@/lib/consentStore');
+    (getStoredConsent as jest.Mock).mockReturnValue({ accepted: true, consentVersion: '1', acceptedAt: new Date().toISOString() });
+    mockFetchError();
+
+    const { queueAssessmentLog, flushAssessmentQueue, ASSESSMENT_QUEUE_KEY } = await import('@/lib/assessmentLogger');
+    queueAssessmentLog(INPUT);
+    await flushAssessmentQueue(); // fails, entry kept
+
+    // Simulate clearAllData() clearing the queue key
+    delete store[ASSESSMENT_QUEUE_KEY];
+
+    // Next flush sees empty queue — no requests sent
+    await flushAssessmentQueue();
+    expect(global.fetch).toHaveBeenCalledTimes(1); // only the first failed attempt
+  });
 });

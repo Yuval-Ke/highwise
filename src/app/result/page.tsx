@@ -19,7 +19,7 @@ import {
 import { riskEngine } from "@/lib/riskEngine";
 import { calculateLLS } from "@/lib/calculateLLS";
 import { track } from "@/lib/analytics";
-import { queueAssessmentLog } from "@/lib/assessmentLogger";
+import { queueAssessmentLog, flushAssessmentQueue } from "@/lib/assessmentLogger";
 import styles from "./result.module.css";
 
 // ── Presentation-layer mapping ────────────────────────────────────────────────
@@ -362,6 +362,7 @@ export default function ResultScreen() {
             ? Object.values(locationSelections).some(Boolean)
             : false,
         });
+        flushAssessmentQueue().catch(() => {});
       }
     }
   }, [router]);
