@@ -1,6 +1,6 @@
 # HighWise — Changelog & Production Recovery Reference
 
-## v0.3 — Backend, Admin, Consent, Assessment Logging (2026-06-22)
+## v0.3 — Backend, Admin, Consent, Assessment Logging (2026-06-23)
 
 ### Production status
 
@@ -8,10 +8,9 @@
 |---|---|
 | Status | **Live on Production** |
 | Production URL | https://highwise.vercel.app |
-| Deployment ID | _to fill after deploy_ |
-| Branch merged | `v0.3-backend-admin` |
-| Final branch commit | `f446c2aeecac53f02c4ae68fa245b39fc756a0e5` |
-| Main commit | _to fill after merge_ |
+| Deployment ID | `dpl_3sZtdUmXC3iHpyJ6RzJ7ULCfjHLE` |
+| Branch | `main` |
+| Final main commit | `0578eb9` |
 | Git tag | `v0.3` |
 | Supabase dataset | `v0.3.0-nepal-initial` (15 treks, 322 locations) |
 
@@ -60,9 +59,18 @@
 - `POST /api/public/assessment-log` inserts to `assessment_logs`
 - 33-field payload; all location fields `null`; `altitudeSource: 'none'`; session dedup via `UNIQUE` constraint
 
+**Assessment logging delivery fix**
+- `flushAssessmentQueue()` now called immediately after `queueAssessmentLog()` on `/result`
+- Fixes race condition where reset could clear the queue before `SyncInit` re-fired the flush in a single-session mobile flow
+- Verified: phone smoke-test log appears in Admin Dashboard after reset
+
 **Admin dashboard**
 - `/admin/dashboard` — server-rendered aggregate stats
 - Risk distribution, by-day (last 14), top treks, dataset versions/sources, device/browser summary
+
+**Admin dataset table overflow fix**
+- Admin dataset tables overflow-clipped with `.table-scroll { overflow-x: auto }` wrapper
+- Applied to trek list (`dataset/page.tsx`) and locations table (`dataset/[trekId]/page.tsx`)
 
 ---
 
@@ -83,16 +91,19 @@
 
 ---
 
-### Test results (at commit `f446c2a`)
+### Test results (at commit `0578eb9`)
 
 | Check | Result |
 |---|---|
-| `npm test` | 292 / 292 passed (13 suites) |
+| `npm test` | 296 / 296 passed (13 suites) |
 | TypeScript (`tsc --noEmit`) | Clean |
 | Production build (`next build`) | Clean |
-| Preview QA | PASS |
-| Production QA | _to fill after deploy_ |
-| Phone smoke test | _to fill after phone test_ |
+| Production QA | PASS |
+| Admin dashboard | PASS |
+| Admin dataset table overflow fix | PASS |
+| Assessment logging delivery fix | PASS |
+| Phone smoke test | PASS |
+| Phone logging QA (log in dashboard after reset) | PASS |
 
 ---
 

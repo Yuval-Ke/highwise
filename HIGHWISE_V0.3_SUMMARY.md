@@ -5,14 +5,12 @@
 | Field | Value |
 |---|---|
 | Version | v0.3 |
-| Branch | `v0.3-backend-admin` |
-| Final branch commit | `f446c2aeecac53f02c4ae68fa245b39fc756a0e5` |
-| Main merge commit | _to fill after merge_ |
+| Branch | `main` |
+| Final main commit | `0578eb9` |
 | Production URL | https://highwise.vercel.app |
-| Production deployment URL | _to fill after deploy_ |
-| Production deployment ID | _to fill after deploy_ |
+| Production deployment ID | `dpl_3sZtdUmXC3iHpyJ6RzJ7ULCfjHLE` |
 | Supabase dataset version | `v0.3.0-nepal-initial` |
-| Release date | 2026-06-22 |
+| Release date | 2026-06-23 |
 
 ---
 
@@ -78,11 +76,20 @@
 - Session deduplication via `session_id` UNIQUE constraint (409 → 200, treated as success)
 - Max 5 attempts per entry; dropped after that
 
+### Assessment logging delivery fix
+- **Root cause:** `queueAssessmentLog()` was called on `/result` but `flushAssessmentQueue()` was only triggered from `SyncInit` on initial app load or `online` event. In a single-session mobile flow the queue was deleted by reset before `SyncInit` could ever re-fire.
+- **Fix:** `flushAssessmentQueue().catch(() => {})` called immediately after `queueAssessmentLog()` in `src/app/result/page.tsx` so the HTTP request is in-flight before any reset can clear the queue.
+- Verified: phone smoke-test log appeared in Admin Dashboard after fix; reset-after-result no longer drops the log.
+
 ### Admin dashboard
 - `/admin/dashboard` — server-rendered aggregate stats (`force-dynamic`)
 - Auth: `createSessionClient()` + `requireAdmin()`
 - Aggregates: total assessments, avg LLS score, risk distribution (green/yellow/orange/red), by-day (last 14), top treks, dataset versions/sources, device/browser summary
 - Graceful "No data yet." for empty sections
+
+### Admin dataset table overflow fix
+- Admin dataset tables (treks list and locations list) were overflowing the white card container on narrow viewports.
+- Fixed with `.table-scroll { overflow-x: auto }` wrapper in `admin.css`; applied to both `dataset/page.tsx` and `dataset/[trekId]/page.tsx`.
 
 ---
 
@@ -104,12 +111,15 @@
 
 | Check | Result |
 |---|---|
-| Jest (292 tests, 13 suites) | PASS |
+| Jest (296 tests, 13 suites) | PASS |
 | TypeScript strict (`--noEmit`) | Clean |
 | Production build (`next build`) | Clean |
-| Preview QA (https://highwise-bifmcs0uk-highwise.vercel.app) | PASS |
-| Production QA | _to fill after deploy_ |
-| Phone smoke test | _to fill after phone test_ |
+| Production QA | PASS |
+| Admin dashboard | PASS |
+| Admin dataset table overflow fix | PASS |
+| Assessment logging delivery fix | PASS |
+| Phone smoke test | PASS |
+| Phone logging QA (log appears in dashboard after reset) | PASS |
 
 ---
 
