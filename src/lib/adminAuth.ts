@@ -40,7 +40,9 @@ export async function lookupAdminUser(userId: string): Promise<AdminIdentity | n
  * or null if they are not authorized.
  */
 export async function requireAdmin(userId: string): Promise<AdminIdentity | null> {
-  return lookupAdminUser(userId);
+  const identity = await lookupAdminUser(userId);
+  if (!identity || (identity.role !== 'admin' && identity.role !== 'owner')) return null;
+  return identity;
 }
 
 /**

@@ -1,6 +1,6 @@
 const INSTALL_ID_KEY = "highwise_install_id";
 const QUEUE_KEY = "highwise_analytics_queue";
-const APP_VERSION = "0.2.0";
+const APP_VERSION = "0.3.0";
 const MAX_QUEUE_SIZE = 200;
 const MAX_AGE_MS = 14 * 24 * 60 * 60 * 1000;
 

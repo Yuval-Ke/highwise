@@ -75,6 +75,16 @@ export async function importTrekCsv(payload: ImportPayload): Promise<ImportActio
     };
   }
 
+  // Server-side row validation (CSV parser may allow nulls)
+  for (const r of rows) {
+    if (r.altitudeMeters === null || r.order === null) {
+      return { status: 'error', message: `Row "${r.locationId}" is missing altitude or order.` };
+    }
+    if (r.altitudeMeters < 0 || r.altitudeMeters > 9000) {
+      return { status: 'error', message: `Row "${r.locationId}" altitude ${r.altitudeMeters}m is out of range (0–9000).` };
+    }
+  }
+
   const hasNeedsReview = rows.some(r => r.needsReview);
 
   const toLocationRow = (trekUuid: string, r: ParsedRow) => ({
@@ -83,8 +93,8 @@ export async function importTrekCsv(payload: ImportPayload): Promise<ImportActio
     name_en:       r.nameEn,
     name_he:       r.nameHe || r.nameEn,
     aliases:       r.aliases,
-    altitude_m:    r.altitudeMeters!,
-    route_order:   r.order!,
+    altitude_m:    r.altitudeMeters as number,
+    route_order:   r.order as number,
     section:       r.section,
     location_type: r.locationType,
     needs_review:  r.needsReview,
@@ -127,12 +137,20 @@ export async function importTrekCsv(payload: ImportPayload): Promise<ImportActio
 
   // ── Replace existing ────────────────────────────────────────────────────────
   if (conflictResolution === 'replace') {
-    const { error: delErr } = await supabase
+    // Upsert new locations (update existing by trek_id+location_id, insert new)
+    const { error: locErr } = await supabase
+      .from('locations')
+      .upsert(rows.map(r => toLocationRow(existingTrek.id, r)), { onConflict: 'trek_id,location_id' });
+
+    if (locErr) return { status: 'error', message: locErr.message };
+
+    // Remove locations not in the new batch
+    const newLocationIds = rows.map(r => r.locationId);
+    await supabase
       .from('locations')
       .delete()
-      .eq('trek_id', existingTrek.id);
-
-    if (delErr) return { status: 'error', message: delErr.message };
+      .eq('trek_id', existingTrek.id)
+      .not('location_id', 'in', `(${newLocationIds.join(',')})`);
 
     const { error: updErr } = await supabase
       .from('treks')
@@ -146,12 +164,6 @@ export async function importTrekCsv(payload: ImportPayload): Promise<ImportActio
       .eq('id', existingTrek.id);
 
     if (updErr) return { status: 'error', message: updErr.message };
-
-    const { error: locErr } = await supabase
-      .from('locations')
-      .insert(rows.map(r => toLocationRow(existingTrek.id, r)));
-
-    if (locErr) return { status: 'error', message: locErr.message };
 
     revalidatePath('/admin/dataset');
     revalidatePath('/admin/import');

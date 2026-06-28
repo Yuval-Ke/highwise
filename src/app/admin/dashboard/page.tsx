@@ -110,7 +110,9 @@ export default async function DashboardPage() {
     .from('assessment_logs')
     .select('created_at, risk_result, trek_id, lls_score, respiratory_illness, red_flags, village_lookup_used, dataset_version, dataset_source, device_category, browser')
     .is('deleted_at', null)
-    .order('created_at', { ascending: false });
+    .order('created_at', { ascending: false })
+    .limit(5000);
+  if (error) console.error('[dashboard] assessment_logs query failed:', error.message);
 
   const logs = (rawLogs ?? []) as LogRow[];
   const stats = buildStats(logs);

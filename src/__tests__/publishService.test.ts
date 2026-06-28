@@ -241,7 +241,8 @@ const SAMPLE_SNAPSHOT: PublishedDataset = {
 function buildCommitMock() {
   const upsertMock  = jest.fn().mockResolvedValue({ error: null });
   const insertMock  = jest.fn().mockResolvedValue({ error: null });
-  const eqMock      = jest.fn().mockResolvedValue({ error: null });
+  const neqMock     = jest.fn().mockResolvedValue({ error: null });
+  const eqMock      = jest.fn().mockReturnValue({ neq: neqMock });
   const updateMock  = jest.fn().mockReturnValue({ eq: eqMock });
 
   const fromMock = jest.fn().mockImplementation((table: string) => {
@@ -251,7 +252,7 @@ function buildCommitMock() {
   });
 
   mockCreateClient.mockReturnValue({ from: fromMock } as never);
-  return { fromMock, updateMock, eqMock, insertMock, upsertMock };
+  return { fromMock, updateMock, eqMock, neqMock, insertMock, upsertMock };
 }
 
 describe('commitSnapshot()', () => {

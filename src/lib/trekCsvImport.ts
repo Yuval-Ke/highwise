@@ -58,7 +58,7 @@ function parseSemicolonList(value: string): string[] {
 
 function parseNeedsReview(value: string): boolean {
   const v = value.trim().toLowerCase();
-  return !(v === 'false' || v === 'no' || v === '0');
+  return v === 'true' || v === 'yes' || v === '1';
 }
 
 function parseNumber(value: string): number | null {

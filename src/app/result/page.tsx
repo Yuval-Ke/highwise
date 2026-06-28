@@ -242,9 +242,13 @@ export default function ResultScreen() {
   useEffect(() => {
     const profile = getUserProfile();
     const rawAssessment = localStorage.getItem(STORAGE_KEYS.currentAssessment);
-    const assessment = rawAssessment
-      ? (JSON.parse(rawAssessment) as Record<string, unknown>)
-      : null;
+    let assessment: Record<string, unknown> | null = null;
+    try {
+      assessment = rawAssessment ? (JSON.parse(rawAssessment) as Record<string, unknown>) : null;
+    } catch {
+      router.replace('/');
+      return;
+    }
 
     if (
       !profile ||

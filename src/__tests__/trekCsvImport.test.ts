@@ -110,9 +110,9 @@ describe('parseCsvText()', () => {
     expect(rows[0].needsReview).toBe(false);
   });
 
-  it('defaults needsReview to true when empty', () => {
+  it('defaults needsReview to false when empty', () => {
     const { rows } = parseCsvText([VALID_HEADER, row({ needsReview: '' })].join('\n'));
-    expect(rows[0].needsReview).toBe(true);
+    expect(rows[0].needsReview).toBe(false);
   });
 
   it('defaults section to "on_route" when empty', () => {

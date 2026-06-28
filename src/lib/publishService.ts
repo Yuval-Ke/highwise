@@ -152,9 +152,10 @@ export async function buildAndValidateSnapshot(): Promise<PublishResult> {
     sortOrder: t.sort_order ?? 0,
   }));
 
+  const trekById = new Map((treks ?? []).map(t => [t.id, t]));
   const publishedLocations: PublishedLocation[] = (locations ?? []).map(l => ({
     locationId: l.location_id,
-    trekId: (treks ?? []).find(t => t.id === l.trek_id)?.trek_id ?? '',
+    trekId: trekById.get(l.trek_id)?.trek_id ?? '',
     nameEn: l.name_en,
     nameHe: l.name_he,
     aliases: l.aliases ?? [],
@@ -248,12 +249,7 @@ export async function commitSnapshot(
 ): Promise<void> {
   const supabase = createServerSupabaseClient();
 
-  // Clear is_current on all prior versions
-  await supabase
-    .from('dataset_versions')
-    .update({ is_current: false })
-    .eq('is_current', true);
-
+  // INSERT new version first (atomic guard: if this fails, nothing changes)
   const { error } = await supabase.from('dataset_versions').insert({
     dataset_version: snapshot.datasetVersion,
     schema_version: snapshot.schemaVersion,
@@ -264,6 +260,13 @@ export async function commitSnapshot(
   });
 
   if (error) throw new Error(`Failed to commit snapshot: ${error.message}`);
+
+  // Only clear old versions after new one is safely inserted
+  await supabase
+    .from('dataset_versions')
+    .update({ is_current: false })
+    .eq('is_current', true)
+    .neq('dataset_version', snapshot.datasetVersion);
 
   // Keep app_config in sync so SyncInit triggers client downloads.
   // Without this, GET /api/public/config still returns datasetVersion:'0.0.0'
