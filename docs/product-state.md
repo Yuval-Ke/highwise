@@ -5,7 +5,7 @@
 | | |
 |---|---|
 | Git tag | `v0.3` at commit `e38b27e` |
-| Latest commit | `cadc20e` (security + code review fixes) |
+| Latest commit | `78a8561` (P4 admin hardening — audit log, logs viewer, CSV export, dashboard RPC) |
 | Production | https://highwise.vercel.app |
 | Dataset | `v0.3.0-nepal-initial` (15 treks, 322 locations, Nepal only) |
 | Tests | 347 passing |
@@ -103,6 +103,7 @@ These are known directions, not committed roadmap. None is in progress.
 
 | Date | Commit | Note |
 |---|---|---|
+| 2026-06-29 | `78a8561` | P4 admin hardening: audit log, logs viewer, CSV export, dashboard RPC; deploy `dpl_3MAmjL9yp2UoPzp8DkNBPGzLNQkA` |
 | 2026-06-29 | `cadc20e` | Security + code review fixes; production deploy `dpl_AiSQibCL1KNKqxkhFPrcGTmf4pfZ` |
 | 2026-06-23 | `05ee4d8` | Admin CSV import merged (v0.3.1) |
 | 2026-06-23 | `e38b27e` | v0.3 tag — assessment logging flush fix, admin dashboard |
