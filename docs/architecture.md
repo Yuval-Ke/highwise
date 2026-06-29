@@ -124,8 +124,19 @@ All `/admin/*` routes are middleware-gated (Supabase Auth cookie). Unauthenticat
 | `/admin/login` | — | Sign in |
 | `/admin/dataset` | admin/owner | CRUD on countries, treks, locations; publish |
 | `/admin/dataset/[trekId]` | admin/owner | Location CRUD for a specific trek |
-| `/admin/dashboard` | admin/owner | Aggregate stats from assessment_logs |
+| `/admin/dashboard` | admin/owner | Aggregate stats from assessment_logs; date-range filter + CSV export |
+| `/admin/audit` | admin/owner | Paginated audit-log viewer (`audit_logs`); resolves actor email via `auth.admin.listUsers()` |
+| `/admin/logs` | admin (view) / owner (delete) | List individual assessment logs; bulk soft-delete is owner-only |
 | `/admin/import` | admin/owner | CSV import of trek+locations |
+
+`/api/admin/*` route handlers are **not** covered by the middleware matcher
+(`/admin/:path*`), so each self-authenticates with its own cookie-based
+`getAuthUser()` + `requireAdmin`/`requireOwner` check:
+
+| Route | Role required | Purpose |
+|---|---|---|
+| `POST /api/admin/publish` | owner | Validate + commit dataset snapshot (audited: `publish_dataset`) |
+| `GET /api/admin/export-logs` | admin/owner | CSV export of non-deleted logs in `?from=&to=` range (audited: `export`) |
 
 ### Roles
 
@@ -135,6 +146,32 @@ Defined in `admin_users.role`:
 
 `requireAdmin()` in `src/lib/adminAuth.ts` enforces `role IN ('admin', 'owner')`.  
 `requireOwner()` enforces `role = 'owner'`.
+
+### Audit logging
+
+`src/lib/auditLog.ts` exports `writeAuditLog(params)` — the single writer for the
+`audit_logs` table. It uses the service-role client (writes bypass RLS;
+`audit_logs` has no insert policy) and is fire-and-forget: on error it
+`console.error`s and returns, so an audit failure never breaks the underlying
+action. Currently wired into:
+
+- `publishDataset` (`admin/dataset/actions.ts`) and `POST /api/admin/publish` → `publish_dataset`
+- `softDeleteLogs` (`admin/logs/actions.ts`) → `soft_delete`
+- `GET /api/admin/export-logs` → `export`
+
+The `/admin/audit` viewer reads these rows (newest first, 50/page) and resolves
+`performed_by` (an `admin_users.id`) to an email via one `auth.admin.listUsers()`
+call (there is no batch `getUserById`).
+
+### Dashboard aggregation
+
+`/admin/dashboard` calls the Postgres function `get_dashboard_stats(p_from, p_to)`
+(migration `20260629000001_dashboard_stats_fn.sql`), which aggregates non-deleted
+`assessment_logs` DB-side and returns one `jsonb` row shaped like the old JS
+`buildStats()`. This removes the previous 5000-row cap and applies the date range
+in one round-trip. A JS fallback (`buildStats` over a capped `.range()` pull)
+remains in the page and is used automatically if the RPC errors (e.g. before the
+migration is applied).
 
 ---
 
@@ -167,6 +204,13 @@ Unique constraint: `(trek_id, location_id)`.
 
 ### `admin_users`
 `id (= Supabase auth user UUID) · role · is_active · email · display_name`
+
+### `audit_logs`
+`id · performed_by (admin_users.id) · performed_at (default now()) · action_type · entity_type · entity_id · old_value (jsonb) · new_value (jsonb) · notes`
+
+`action_type` is CHECK-constrained to the `AuditActionType` union. Select is open
+to any authenticated admin (RLS); inserts have no policy, so only the service-role
+client (`writeAuditLog`) writes.
 
 ---
 

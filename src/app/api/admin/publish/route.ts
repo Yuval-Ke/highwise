@@ -3,6 +3,7 @@ import { cookies } from 'next/headers';
 import { createServerClient } from '@supabase/ssr';
 import { requireOwner } from '@/lib/adminAuth';
 import { buildAndValidateSnapshot, commitSnapshot } from '@/lib/publishService';
+import { writeAuditLog } from '@/lib/auditLog';
 
 async function getAuthUser() {
   const cookieStore = await cookies();
@@ -59,6 +60,12 @@ export async function POST(request: Request): Promise<NextResponse> {
       return NextResponse.json({ error: 'No snapshot built' }, { status: 500 });
     }
     await commitSnapshot(result.snapshot, user.id);
+    await writeAuditLog({
+      performedBy: user.id,
+      actionType: 'publish_dataset',
+      entityType: 'dataset',
+      entityId: result.snapshot.datasetVersion,
+    });
     return NextResponse.json({ success: true, datasetVersion: result.snapshot.datasetVersion });
   } catch (err) {
     console.error('[POST /api/admin/publish]', err);
