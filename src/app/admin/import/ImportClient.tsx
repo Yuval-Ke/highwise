@@ -115,6 +115,8 @@ export default function ImportClient({ countryCodes, adminEmail, adminRole, logo
         <span className="admin-nav-brand">HighWise Admin</span>
         <Link href="/admin/dataset" className="admin-nav-link">Dataset</Link>
         <Link href="/admin/dashboard" className="admin-nav-link">Dashboard</Link>
+        <Link href="/admin/audit" className="admin-nav-link">Audit</Link>
+        <Link href="/admin/logs" className="admin-nav-link">Logs</Link>
         <Link href="/admin/import" className="admin-nav-link active">Import</Link>
         <div className="admin-nav-spacer" />
         <span className="admin-nav-user">{adminEmail} · {adminRole}</span>

@@ -5,6 +5,7 @@ import { createServerSupabaseClient } from '@/lib/supabase/server';
 import { createSessionClient } from '@/lib/supabase/serverSession';
 import { requireAdmin, requireOwner } from '@/lib/adminAuth';
 import { buildAndValidateSnapshot, commitSnapshot } from '@/lib/publishService';
+import { writeAuditLog } from '@/lib/auditLog';
 
 async function getAuthAdmin() {
   const session = await createSessionClient();
@@ -245,6 +246,13 @@ export async function publishDataset(formData: FormData): Promise<void> {
   if (result.validationErrors.length > 0 || !result.snapshot) return;
 
   await commitSnapshot(result.snapshot, owner.userId);
+
+  await writeAuditLog({
+    performedBy: owner.userId,
+    actionType: 'publish_dataset',
+    entityType: 'dataset',
+    entityId: result.snapshot.datasetVersion,
+  });
 
   revalidatePath('/admin/dataset');
 }
